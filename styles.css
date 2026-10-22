@@ -8,3 +8,10 @@
 @media(max-width:800px){.hero-note{margin-top:54px}}
 @media(max-width:480px){.hero-note{margin-top:48px}}
 
+/* Discreet scroll interactions: content stays visible when motion is reduced. */
+.main-nav a[aria-current="location"]:not(.button){color:#9a7743}
+.main-nav a[aria-current="location"]:not(.button)::after{content:"";position:absolute;left:0;right:0;bottom:-8px;height:1px;background:var(--gold)}
+.scroll-reveal{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s cubic-bezier(.2,.7,.2,1);transition-delay:var(--reveal-delay,0ms)}
+.scroll-reveal.is-visible{opacity:1;transform:translateY(0)}
+@media(prefers-reduced-motion:reduce){.scroll-reveal{opacity:1;transform:none;transition:none}}
+
