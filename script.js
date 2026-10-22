@@ -43,5 +43,44 @@
     status.style.color = '#355d49';
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
   });
+
+  const revealItems = document.querySelectorAll(
+    '.about-grid, .practice-heading, .neutral-panel, .steps-heading, .steps-grid .step, .appointment-copy, .contact-form, .faq-grid > div, .contact-grid > div'
+  );
+  const navLinks = [...document.querySelectorAll('.main-nav a[href^="#"]')];
+  const sectionLinks = navLinks
+    .map(link => ({ link, section: document.querySelector(link.getAttribute('href')) }))
+    .filter(item => item.section);
+
+  if ('IntersectionObserver' in window) {
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -35px 0px' });
+
+    revealItems.forEach((item, index) => {
+      item.classList.add('scroll-reveal');
+      item.style.setProperty('--reveal-delay', `${Math.min(index % 4, 3) * 75}ms`);
+      revealObserver.observe(item);
+    });
+
+    const activeObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        sectionLinks.forEach(({ link, section }) => {
+          const active = section === entry.target;
+          if (active) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        });
+      });
+    }, { threshold: 0, rootMargin: '-25% 0px -65% 0px' });
+
+    sectionLinks.forEach(({ section }) => activeObserver.observe(section));
+  } else {
+    revealItems.forEach(item => item.classList.add('is-visible'));
+  }
 })();
 
